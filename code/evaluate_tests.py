@@ -10,7 +10,7 @@ def dummy_metric(truth, hypothesis):
     :param hypothesis:
     :return:
     """
-    return hypothesis <= truth + 1 and hypothesis >= truth - 1
+    return truth - 1 <= hypothesis <= truth + 1
 
 
 def dummy_score_eval(correct, incorrect):
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     # this is the analogy model that we will be using
 
     embFileName = 'glove.6B.{0}d.txt'.format(word_dim)
-    embeddingsFile = '../data/glove.6B/' + embFileName
+    embeddingsFile = '../embeddings/glove.6B/' + embFileName
     outFile = '../results/accuracy_' + embFileName
     gsm_mod = gensim.models.Word2Vec.load_word2vec_format(embeddingsFile, binary=False)
     gsm_mod.init_sims(replace=True)  # indicates we're finished training to save ram
