@@ -1,3 +1,11 @@
+"""
+Evaluates word embeddings against a similarity test set
+
+Instructions to run: cd into topmost directory
+type "python code/evaluate_tests.py embeddings/my_embeddings.txt [optional_test_file.txt]
+note that my_embeddings.txt needs to contain embeddings corresponding
+to all the vocabulary in the test file
+"""
 import sys
 
 import gensim
@@ -54,25 +62,18 @@ def evaluate_similarity(eval_file, gsm_mod):
 
 
 if __name__ == "__main__":
-    # have the option to choose a dimension for glove
-    dimension_opt = [50, 100, 200, 300]
+
     try:
-        word_dim = int(sys.argv[1])
-    except IndexError:
-        word_dim = 50
+        EMBEDDINGSFILE = sys.argv[1]
+    except IndexError as e:
+        print('Must enter embeddings file to use!')
+        raise e
 
     try:
         evaluation_file = sys.argv[2]
     except IndexError:
-        evaluation_file = '../data/wordsim353.txt'
+        evaluation_file = 'data/simlex999.txt'
 
-    assert word_dim in dimension_opt
-    # this is the analogy model that we will be using
-
-    embFileName = 'glove.6B.{0}d.txt'.format(word_dim)
-    embeddingsFile = '../embeddings/glove.6B/' + embFileName
-    outFile = '../results/accuracy_' + embFileName
-    gsm_mod = gensim.models.Word2Vec.load_word2vec_format(embeddingsFile, binary=False)
+    gsm_mod = gensim.models.Word2Vec.load_word2vec_format(EMBEDDINGSFILE, binary=False)
     gsm_mod.init_sims(replace=True)  # indicates we're finished training to save ram
     evaluate_similarity(evaluation_file, gsm_mod)
-
