@@ -14,26 +14,39 @@ workingDir = os.getcwd()
 ############################
 # specify directories      #
 ############################
+textDir = workingDir + '/GG_128_SRL/word_embeddings_Maxpool.csv' #word embeddings dir
+visualDir = workingDir + '/VGG_128_SRL/visual_vecs_Maxpool.csv' #visual vectors dir
+query_wordsDir = workingDir + '/query_words.csv' #query words dir (OPTIONAL, just if names are not next to embeddings)
+query_embeddDir = workingDir + '/vectors/query_embeddings.csv' #query word embeddings
+save_mappedDir = workingDir + '/mapped_visual_repr.txt' #save the mapped output
 
-# 1. ########## TEXT and VISUAL vectors (i.e., input X and output y for the learning)
-# visual
-visualDir = workingDir + '/VGG_128_SRL/visual_vecs_Maxpool.csv'
-visual = np.loadtxt(open(visualDir,"rb"),delimiter=",",skiprows=0) #READ csv into a numpy array
-# text
-textDir = workingDir + '/VGG_128_SRL/word_embeddings_Maxpool.csv'
-text = np.loadtxt(open(textDir,"rb"),delimiter=",",skiprows=0) #READ csv into a numpy array
+############################
+# READ data                #
+############################
+# 1. ########## WORD EMBEDDINGS and VISUAL vectors (i.e., input X and output y for the learning).
+format = 'mixed' #choose 'numeric' (only numbers) OR 'mixed' if you have mixed data (first column is string)[word, vector_representation_dim_n]:
 
-######## query words ###############
+if format == 'numeric':
+    #In NUMERIC ONLY format
+    # visual
+    visual = np.loadtxt(open(visualDir,"rb"),delimiter=",",skiprows=0) #READ csv into a numpy array
+    # text
+    text = np.loadtxt(open(textDir,"rb"),delimiter=",",skiprows=0) #READ csv into a numpy array
+
+if format == 'mixed':
+    #OR if the input is in the MIXED format [word, vector_representation_dim_n]:
+    import readDATA as rd
+    words, visual = rd.readDATA(visualDir, format='csv') #get visual vectors
+    _, visual = rd.readDATA(textDir, format='csv') #get word embeddings
+
+
+# 2. ######## QUERY words ###############
 #get query words and their embedding: (OPTIONAL, just if you want to map something)
-#TODO: get word embeddings for the words that are in query_words.csv but we do not have visual representation for
-#words
-query_wordsDir = workingDir + '/query_words.csv'
-#query_words =
-#word embeddings
-query_embeddDir = workingDir + '/embedding_query_words.csv'
-#embedding_query_words =
-#save the mapped output:
-save_mappedDir = workingDir + '/mapped_visual_repr.txt'
+import readDATA as rd
+query_words, embedding_query_words = rd.readDATA(query_embeddDir, format='csv')  # get visual vectors
+
+
+
 
 
 
