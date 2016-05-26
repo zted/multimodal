@@ -36,24 +36,72 @@ def load_test_file(fileDir):
     return word_pairs, scores
 
 
+def load_embeddings(afile):
+    """
+    loads a csv file, returns dictionaries with words as keys,
+    embeddings in the form of numpy arrays as values
+    :param afile:
+    :return:
+    """
+    import numpy as np
+    embed_dict = {}
+    with open(afile, 'r') as f:
+        for line in f:
+            splits = line.rstrip('\n').split(',')
+            word = splits[0]
+            embeddings = np.array(splits[1:])
+            embed_dict[word] = embeddings
+    return embed_dict
 
 
+def load_word_objects(afile):
+    """
+    Loads words from a file into objects that contains the word's attributes.
+    For example, the file should be formatted as such:
+    WORD ENTROPY DISPERSION STD CONCRETENESS
+    These values are read and initialized as objects, then passed back in
+    a lookup table/dictionary
+    :param afile: file containing words' attributes
+    :return: dictionary where the key is a word, and its value is the object
+    of the word
+    """
+    class WordObject(object):
+        def __init__(self, name):
+            self.name = name
+            self.attributes = {'entropy': None,
+                               'dispersion': None,
+                               'std': None,
+                               'concreteness': None}
+            return
 
+        def setAttribute(self, attribute, value):
+            if value == 'N/A':
+                pass
+            else:
+                self.attributes[attribute] = int(value)
+            return
 
+        def getAttribute(self, attribute):
+            return self.attributes[attribute.lower()]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    word_dict = {}
+    skipfirst = True
+    # skips the first line since it is a header
+    with open(afile, 'r') as f:
+        for line in f:
+            if skipfirst:
+                skipfirst = False
+                continue
+            splits = line.rstrip('\n').split(' ')
+            word = splits[0]
+            entropy = splits[1]
+            dispersion = splits[2]
+            std = splits[3]
+            concreteness = splits[4]
+            wordObj = WordObject(word)
+            wordObj.setAttribute('entropy', entropy)
+            wordObj.setAttribute('dispersion', dispersion)
+            wordObj.setAttribute('std', std)
+            wordObj.setAttribute('concreteness', concreteness)
+            word_dict[word] = wordObj
+    return word_dict
