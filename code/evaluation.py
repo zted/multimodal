@@ -15,7 +15,9 @@ def performance_measure(predicted, groundtruth):
 
 
 def compute_similarity(v1, v2):
-    cossim = (10 * np.dot(v1, v2)) / ( np.linalg.norm(v1) * np.linalg.norm(v2) )
+    v1 = [float(t) for t in v1]
+    v2 = [float(t) for t in v2]
+    cossim = 10 * np.dot(v1, v2) / ( np.linalg.norm(v1) * np.linalg.norm(v2) )
     return cossim
 
 
@@ -51,8 +53,19 @@ def mapping_method(tuples, wordEmbeddings, mappedVisual, Visual , word_obj_dict,
             VE1 = Visual[w1]
             pass
 
-        # TODO: do the same thing for the second word
-        VE2 = np.array([0]*50) # <- placeholder, delete this later
+        if w2_attribute_value == None:
+            # Does not have this attribute, do something, like use mapped
+            VE2 = mappedVisual[w2]
+        elif w2_attribute_value > cutoff:
+            # Do something, maybe used mapped?
+            VE2 = mappedVisual[w2]
+            pass
+        else:
+            # Do something, use visual?
+            VE2 = Visual[w2]
+            pass
+        #VE2 = np.array([0]*300) # <- placeholder, delete this later
+
 
         # concatenate the visual and word embeddings
         combined1 = np.concatenate([WE1, VE1], axis=0)
@@ -100,9 +113,9 @@ if __name__ == "__main__":
     tuples, scores = rd.load_test_file(datasetDir)
     #set DIRECTORIES
     word_attr_dict = rd.load_word_objects('../data/wordattributes.txt')
-    word_emb = workingDir + '/embeddings/query_wordembeddings.txt'
-    mapped_vis_emb = workingDir + '/embeddings/mapped_visual_embeddings_maxpool.txt'
-    vis_emb = workingDir + '/embeddings/query_visual_embeddings_maxpool.txt'
+    word_emb = '../embeddings/query_wordembeddings.csv'
+    mapped_vis_emb =  '../embeddings/mapped_visual_maxpool.txt'
+    vis_emb = '../embeddings/query_visual_embeddings_maxpool.txt'
     #LOAD them
     word_emb = rd.load_embeddings(word_emb) # some function to load embeddings
     mapped_vis_emb = rd.load_embeddings(mapped_vis_emb) # some function to load embeddings
