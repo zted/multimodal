@@ -78,7 +78,7 @@ def load_word_objects(afile):
             if value == 'N/A':
                 pass
             else:
-                self.attributes[attribute] = int(value)
+                self.attributes[attribute] = float(value)
             return
 
         def getAttribute(self, attribute):
