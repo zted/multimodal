@@ -16,8 +16,8 @@ workingDir = os.getcwd()
 ############################
 textDir = workingDir + '/GG_128_SRL/word_embeddings_Maxpool.csv' #word embeddings dir
 visualDir = workingDir + '/VGG_128_SRL/visual_vecs_Maxpool.csv' #visual vectors dir
-query_wordsDir = workingDir + '/query_words.csv' #query words dir (OPTIONAL, just if names are not next to embeddings)
 query_embeddDir = workingDir + '/vectors/query_embeddings.csv' #query word embeddings
+query_wordsDir = workingDir + '/query_words.csv' #query words dir (OPTIONAL, just if names are not next to embeddings)
 save_mappedDir = workingDir + '/mapped_visual_repr.txt' #save the mapped output
 
 ############################
@@ -28,11 +28,8 @@ format = 'mixed' #choose 'numeric' (only numbers) OR 'mixed' if you have mixed d
 
 if format == 'numeric':
     #In NUMERIC ONLY format
-    # visual
-    visual = np.loadtxt(open(visualDir,"rb"),delimiter=",",skiprows=0) #READ csv into a numpy array
-    # text
-    text = np.loadtxt(open(textDir,"rb"),delimiter=",",skiprows=0) #READ csv into a numpy array
-
+    visual = np.loadtxt(open(visualDir,"rb"),delimiter=",",skiprows=0) # visual #READ csv into a numpy array
+    text = np.loadtxt(open(textDir,"rb"),delimiter=",",skiprows=0)  # text #READ csv into a numpy array
 if format == 'mixed':
     #OR if the input is in the MIXED format [word, vector_representation_dim_n]:
     import readDATA as rd

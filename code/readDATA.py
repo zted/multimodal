@@ -24,6 +24,30 @@ def readDATA(fileDir, format='csv'):
 
 
 
+#load a test with
+def load_test_file(fileDir):
+    word_pairs = []
+    scores = []
+    with open(fileDir, 'r') as f:
+        for line in f:
+            splits = line.rstrip('\n').split('\t')
+            word_pairs.append((splits[0].lower(), splits[1].lower()))
+            scores.append(float(splits[2]))
+    return word_pairs, scores
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
