@@ -1,5 +1,6 @@
+
+
 import numpy as np
-#Evaluate all the conditions in a data set:
 
 def performance_measure(predicted, groundtruth):
     #INPUT: predicted vector and groundtruth (both numerical)
@@ -13,19 +14,20 @@ def performance_measure(predicted, groundtruth):
     return perf
 
 
+def compute_similarity(v1, v2):
+    cossim = (10 * np.dot(v1, v2)) / ( np.linalg.norm(v1) * np.linalg.norm(v2) )
+    return cossim
+
+
+
 ################
 # METHODS      #
 ################
 # INPUT: tuples, wordEmbeddings, mappedVisual, Visual , disp_matrix, disp_cutoff
 # OUTPUT: a vector of predictions (NUMERICAL)
 
-def compute_similarity(v1, v2):
-    # TODO: fill this in
-    return 0
-
-
 def mapping_method(tuples, wordEmbeddings, mappedVisual, Visual , word_obj_dict, cutoff):
-    # INPUT: wordpairs, dispersion
+    # INPUT: wordpairs,  wordEmbeddings, mappedVisual, Visual , disp_matrix, disp_cutoff
     # OUTPUT: a vector of predictions (NUMERICAL)
     predictions = []
     for w1, w2 in tuples:
@@ -80,25 +82,40 @@ def visual_only_cutoff_method(tuples, mappedVisual, Visual, disp_value):  # uses
 
 
 if __name__ == "__main__":
+    # get working directory
+    import os
+    print(os.getcwd() + "\n")
+    workingDir = os.getcwd()
+    # add a path to the code (for the dependencies of import)
+    #codeDir = workingDir + '/code'
+    #import sys
+    #sys.path.append(codeDir)
 
-    #evaluates the methods at each dispersion value (just mapping method changes)
+    print(workingDir)
+
+    # load DATASET
     import readDATA as rd
-    datasetDir = 'path_to_dataset'
+    #datasetDir = workingDir + '../data/men.txt'
+    datasetDir = '../data/men.txt'
     tuples, scores = rd.load_test_file(datasetDir)
-
+    #set DIRECTORIES
     word_attr_dict = rd.load_word_objects('../data/wordattributes.txt')
-    word_emb = 'path_to_embeddings'
-    mapped_vis_emb = 'path_to_embeddings'
-    vis_emb = 'path_to_embeddings'
+    word_emb = workingDir + '/embeddings/query_wordembeddings.txt'
+    mapped_vis_emb = workingDir + '/embeddings/mapped_visual_embeddings_maxpool.txt'
+    vis_emb = workingDir + '/embeddings/query_visual_embeddings_maxpool.txt'
+    #LOAD them
     word_emb = rd.load_embeddings(word_emb) # some function to load embeddings
     mapped_vis_emb = rd.load_embeddings(mapped_vis_emb) # some function to load embeddings
     vis_emb = rd.load_embeddings(vis_emb) # some function to load embeddings
+
     cutoff_value = 1
 
     #PREDICT: method 1, method 2, etc.
+    pred_map_method = mapping_method(tuples, word_emb, mapped_vis_emb, vis_emb, word_attr_dict, cutoff_value)
 
-    prediction_vectors = mapping_method(tuples, word_emb, mapped_vis_emb, vis_emb, word_attr_dict, cutoff_value)
-    #call methods
     #EVALUATE PERFORMANCE: method 1, method 2, etc.
     #call perf measure
+    performance = performance_measure(pred_map_method, scores)
+
+    print(performance)
 
