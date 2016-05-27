@@ -23,11 +23,9 @@ sys.path.append(codeDir)
 #####################################
 vects_type = 'maxpool' # type of representations used for LEARNING ('maxpool' or 'mean')
 # good results with: model = 'linear', learningRate = 0.02, dropoutRate = 0.35, NumIterations = 5, hiddenUnits = 30
-test_data = True #to split or not (True/False) a partition of data for testing (10%by default)
-scale = False #scale the data
-model = 'neuralnet' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
-learningRate = 0.02 # 0.02 is good for neuralnet. 0.0005 good for linear model.
-dropoutRate = 0.30 # 0.25 - 0.35 work well for linear and neuralnet.
+model = 'CCA' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
+learningRate = 0.002 # 0.02 is good for neuralnet. 0.0005 good for linear model.
+dropoutRate = 0.20 # 0.25 - 0.35 work well for linear and neuralnet.
 NumIterations = 10 #a hyperparameter that the library requires
 #parameters JUST FOR NEURALNET:
 hiddenUnits = 250 #just applies to neuralnet. 30 works quite well
@@ -35,8 +33,11 @@ activationFun = 'Tanh' #just applies to neuralnet. OPTIONS = ('Sigmoid' or 'Tanh
 outputLayer = 'Linear' #just applies to neuralnet. OPTIONS =('Linear' or 'Softmax')
 
 #Other parameters
+test_data = False #to split or not (True/False) a partition of data for testing (10%by default). If False, evaluation is in training data
+scale = False #scale the data
 stored = False #if you want to import an existing model or LEARN a new one: True or False
 store_model = False #if you want to store the model that you are using: True or False
+map_embeddings = False
 
 savename = '_' + vects_type + '_' + model + '_LR_' + str(learningRate) + '_dropout_' + str(dropoutRate) + '_nhidden_' + str(hiddenUnits) + '_actiFun_' + activationFun
 
@@ -114,6 +115,7 @@ visual = [] #empty memory
 
 
 
+
 #scale the data
 if scale == True:
     #X = np.concatenate((X_train,X_test), axis=0)
@@ -153,7 +155,15 @@ if model == 'softmax':
         n_iter=NumIterations, dropout_rate= dropoutRate)
     nn.fit(X_train, y_train)
 
-#TODO: add CCA model and autoencoder-pretrain
+
+#define CCA
+if model == 'CCA':
+    from sklearn.cross_decomposition import CCA
+    nn = CCA(copy=True, max_iter=500, n_components=5, scale=False, tol=1e-06)
+    nn.fit(X_train, y_train)
+
+
+#TODO: add autoencoder-pretrain
 
 
 ######################
@@ -166,7 +176,7 @@ y_predicted = nn.predict(X_test)  # predict
 #  EVALUATION   # (to evaluate how well the REGRESSION did). For now we evaluate in the TRAINING DATA
 #################
 # R^2 measure
-print(nn.score(X_test, y_test)) #evaluating predictions with R^2
+print('R^2= ',nn.score(X_test, y_test)) #evaluating predictions with R^2
 
 # My EVALUATION metric (mean cosine similarity)
 cos = 0
@@ -174,8 +184,7 @@ for i in range(1,y_test.shape[0]):
     #cos = cos + np.dot(np.array(y_predicted[i,]), np.array(y_test[i,]))/ (np.linalg.norm(np.array(y_test[i,])) * np.linalg.norm(np.array(y_predicted[i,])))
     cos = cos + np.dot(y_predicted[i,], y_test[i,]) / (np.linalg.norm(y_test[i,]) * np.linalg.norm(y_predicted[i,]))
 meanCos = cos/y_train.shape[0]
-print(meanCos)
-
+print('mean cos similarity= ', meanCos)
 
 
 
@@ -189,18 +198,17 @@ if store_model == True:
     pickle.dump(nn, open(save_modelDir, 'wb'))
 
 
-
 ######################
 #  MAP query words   # (optional) --> produces mapped visual representations
 ######################
-mapped_query_words = nn.predict(embedding_query_words)  # predict
+if map_embeddings == True:
+    mapped_query_words = nn.predict(embedding_query_words)  # predict
 
 
 
 #WRITE mapped vectors (from query_words.csv)
 import writeDATA as wr
-wr.writeCSV(query_words,mapped_query_words, save_mappedDir)
-
+wr.writeCSV(query_words, mapped_query_words, save_mappedDir)
 
 
 

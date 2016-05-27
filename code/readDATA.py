@@ -85,12 +85,12 @@ def load_word_objects(afile):
             return self.attributes[attribute.lower()]
 
     word_dict = {}
-    skipfirst = True
+    skipfirst = False
     # skips the first line since it is a header
     with open(afile, 'r') as f:
         for line in f:
             if skipfirst:
-                skipfirst = False
+                skipfirst = True
                 continue
             splits = line.rstrip('\n').split(' ')
             word = splits[0]
@@ -105,3 +105,38 @@ def load_word_objects(afile):
             wordObj.setAttribute('concreteness', concreteness)
             word_dict[word] = wordObj
     return word_dict
+
+
+
+def get_stats(vis_embDir, word_attr_dict, measure):
+    import numpy as np
+    import readDATA as rd
+    #vis_embDir is the visual embeddings, to get the list of words
+    # word_attr_dict: is the dictionary whith the entropy, etc.
+    words, _ = rd.readDATA(vis_embDir, 'spaces')
+    values = []
+    for word in words:
+        w_obj = word_attr_dict[word]
+        value = [w_obj.getAttribute(measure)]
+        values.append(value)
+    values = [item for sublist in values for item in sublist]  #first flatten the list
+    minim = min([x for x in values if x is not None])
+    maxim = max(values)
+    med = np.median(values)
+    return(minim, maxim, med)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
