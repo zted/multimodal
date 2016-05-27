@@ -106,9 +106,10 @@ if __name__ == "__main__":
     #sys.path.append(codeDir)
 
     #some HYPERPARAMETERS:
-    print(workingDir)
     measure = 'entropy'
     vects_type = 'maxpool'
+    n_cutoffs = 10
+
 
     # load DATASET
     import readDATA as rd
@@ -126,18 +127,21 @@ if __name__ == "__main__":
     vis_emb = rd.load_embeddings(vis_embDir) # some function to load embeddings
 
     # get DESCRIPTIVE STATISTICS of entropy, etc. (i.e., measure)
-    #get words
-    minim, maxim, med = rd.get_stats(vis_embDir, word_attr_dict, measure)
+    words, _ = rd.readDATA(vis_embDir, 'spaces') #get words
+    minim, maxim, med = rd.get_stats(words, word_attr_dict, measure) #get descr stats for the measure of interest
+    words = []
 
     #TODO: do a for loop to compute at different cutoffs
-    cutoff_value = 1
 
-    #PREDICT: method 1, method 2, etc.
-    pred_map_method = mapping_method(tuples, word_emb, mapped_vis_emb, vis_emb, word_attr_dict, cutoff_value, measure)
+    cutoffs = np.arange(minim, maxim +float(maxim-minim)/n_cutoffs, float(maxim-minim)/n_cutoffs) #generate cutoff values
+    perf_map_method = [None]*len(cutoffs)
+    for i in range(len(cutoffs)):
+        cutoff_value = cutoffs[i]
+        cutoff_value = 1
+        #PREDICT: method 1, method 2, etc.
+        pred_map_method = mapping_method(tuples, word_emb, mapped_vis_emb, vis_emb, word_attr_dict, cutoff_value, measure)
+        #EVALUATE PERFORMANCE: method 1, method 2, etc.
+        perf_map_method[i] = performance_measure(pred_map_method, scores)
 
-    #EVALUATE PERFORMANCE: method 1, method 2, etc.
-    #call perf measure
-    performance = performance_measure(pred_map_method, scores)
-
-    print(performance)
+    print(perf_map_method)
 

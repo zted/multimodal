@@ -23,21 +23,22 @@ sys.path.append(codeDir)
 #####################################
 vects_type = 'maxpool' # type of representations used for LEARNING ('maxpool' or 'mean')
 # good results with: model = 'linear', learningRate = 0.02, dropoutRate = 0.35, NumIterations = 5, hiddenUnits = 30
-model = 'CCA' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
-learningRate = 0.002 # 0.02 is good for neuralnet. 0.0005 good for linear model.
-dropoutRate = 0.20 # 0.25 - 0.35 work well for linear and neuralnet.
+model = 'neuralnet' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
+learningRate = 0.2 # 0.02 is good for neuralnet. 0.0005 good for linear model.
+dropoutRate = 0.35 # 0.25 - 0.35 work well for linear and neuralnet.
 NumIterations = 10 #a hyperparameter that the library requires
 #parameters JUST FOR NEURALNET:
-hiddenUnits = 250 #just applies to neuralnet. 30 works quite well
+hiddenUnits = 200 #just applies to neuralnet. 30 works quite well
 activationFun = 'Tanh' #just applies to neuralnet. OPTIONS = ('Sigmoid' or 'Tanh' or 'Rectifier')
 outputLayer = 'Linear' #just applies to neuralnet. OPTIONS =('Linear' or 'Softmax')
 
 #Other parameters
-test_data = False #to split or not (True/False) a partition of data for testing (10%by default). If False, evaluation is in training data
+test_data = True #to split or not (True/False) a partition of data for testing (10%by default). If False, evaluation is in training data
 scale = False #scale the data
 stored = False #if you want to import an existing model or LEARN a new one: True or False
 store_model = False #if you want to store the model that you are using: True or False
 map_embeddings = False
+store_performance = True #if you want to store performance of these particular settings
 
 savename = '_' + vects_type + '_' + model + '_LR_' + str(learningRate) + '_dropout_' + str(dropoutRate) + '_nhidden_' + str(hiddenUnits) + '_actiFun_' + activationFun
 
@@ -53,6 +54,7 @@ query_embeddDir = workingDir + '/embeddings/query_wordembeddings.csv' #query wor
 save_mappedDir = workingDir + '/embeddings/mapped_visual'+ savename +'.csv' #save the mapped output
 save_modelDir = workingDir + '/models/MODEL' + savename + '.pkl' #save the mapped output
 load_modelDir = save_modelDir
+save_perfDir = workingDir + '/results/REGRESSION_' + savename + '.csv' #save the mapped output
 
 
 
@@ -176,7 +178,8 @@ y_predicted = nn.predict(X_test)  # predict
 #  EVALUATION   # (to evaluate how well the REGRESSION did). For now we evaluate in the TRAINING DATA
 #################
 # R^2 measure
-print('R^2= ',nn.score(X_test, y_test)) #evaluating predictions with R^2
+R2 = nn.score(X_test, y_test)
+print('R^2= ',R2) #evaluating predictions with R^2
 
 # My EVALUATION metric (mean cosine similarity)
 cos = 0
@@ -187,6 +190,14 @@ meanCos = cos/y_train.shape[0]
 print('mean cos similarity= ', meanCos)
 
 
+
+#######################
+#  STORE performance  # (optional)
+#######################
+if store_performance == True:
+    results = [ [ 'R^2' , R2  ], ['mean cos simil', meanCos] ]
+    import writeDATA as wr
+    wr.matrix2csv(results, save_perfDir)
 
 
 

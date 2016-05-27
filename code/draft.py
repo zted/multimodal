@@ -60,22 +60,34 @@ with open(workingDir + '/data/descript_stats_disp.csv', "wb") as f:
     writer.writerows(a)
 
 
+from __future__ import division
+
+mini = 2
+maxi = 5
+
+ccs = np.arange(mini, maxi +(maxi-mini)/10, (maxi-mini)/10)
+
+for cc in ccs:
+    print('foo', cc)
+
+for i in range(len(ccs)):
+    print('foo', ccs[i])
+
+ccs[1]
+
+maxi-mini
+
+float()
+
+(maxi-mini)/10
 
 
+kk = [None]*len(ccs)
 
 
+kk[1] = 'foo'
 
+kk[3] = 65
 
-
-
-
-
-
-
-
-
-
-
-
-
+kk
 

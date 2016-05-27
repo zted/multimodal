@@ -108,12 +108,11 @@ def load_word_objects(afile):
 
 
 
-def get_stats(vis_embDir, word_attr_dict, measure):
+def get_stats(words, word_attr_dict, measure):
     import numpy as np
     import readDATA as rd
     #vis_embDir is the visual embeddings, to get the list of words
     # word_attr_dict: is the dictionary whith the entropy, etc.
-    words, _ = rd.readDATA(vis_embDir, 'spaces')
     values = []
     for word in words:
         w_obj = word_attr_dict[word]
