@@ -36,8 +36,9 @@ def load_test_file(fileDir):
     return word_pairs, scores
 
 
-def load_embeddings(afile):
+def load_embeddings(afile, format='csv'):
     """
+    #format: either 'csv' or 'spaces'
     loads a csv file, returns dictionaries with words as keys,
     embeddings in the form of numpy arrays as values
     :param afile:
@@ -47,7 +48,10 @@ def load_embeddings(afile):
     embed_dict = {}
     with open(afile, 'r') as f:
         for line in f:
-            splits = line.rstrip('\n').split(',')
+            if format == 'csv':
+                splits = line.rstrip('\n').split(',')
+            elif format == 'spaces':
+                splits = line.rstrip('\n').split(' ')
             word = splits[0]
             embeddings = np.array(splits[1:])
             embed_dict[word] = embeddings

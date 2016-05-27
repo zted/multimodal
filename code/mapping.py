@@ -21,10 +21,10 @@ sys.path.append(codeDir)
 #####################################
 #  define PARAMETERS for learning:  #
 #####################################
-vects_type = 'maxpool' # type of representations used for LEARNING ('maxpool' or 'mean')
+vects_type = 'mean' # type of representations used for LEARNING ('maxpool' or 'mean')
 # good results with: model = 'linear', learningRate = 0.02, dropoutRate = 0.35, NumIterations = 5, hiddenUnits = 30
-model = 'neuralnet' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
-learningRate = 0.2 # 0.02 is good for neuralnet. 0.0005 good for linear model.
+model = 'linear' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
+learningRate = 0.02 # 0.02 is good for neuralnet. 0.0005 good for linear model.
 dropoutRate = 0.35 # 0.25 - 0.35 work well for linear and neuralnet.
 NumIterations = 10 #a hyperparameter that the library requires
 #parameters JUST FOR NEURALNET:
@@ -116,8 +116,6 @@ visual = [] #empty memory
 
 
 
-
-
 #scale the data
 if scale == True:
     #X = np.concatenate((X_train,X_test), axis=0)
@@ -140,6 +138,17 @@ if model == 'neuralnet':
     nn.fit(X_train, y_train)
 
 
+#Define NEURAL NETWORK
+if model == 'neuralnet2':
+    nn = Regressor(
+        layers=[
+            Layer(activationFun, units=hiddenUnits),
+            Layer(activationFun, units=100),
+            Layer(outputLayer)],
+        learning_rate=learningRate,
+        n_iter=NumIterations, dropout_rate= dropoutRate)
+    nn.fit(X_train, y_train)
+
 #Define LINEAR Model
 if model == 'linear':
     nn = Regressor(
@@ -161,7 +170,7 @@ if model == 'softmax':
 #define CCA
 if model == 'CCA':
     from sklearn.cross_decomposition import CCA
-    nn = CCA(copy=True, max_iter=500, n_components=5, scale=False, tol=1e-06)
+    nn = CCA(copy=True, max_iter=500, n_components=1, scale=False, tol=1e-06)
     nn.fit(X_train, y_train)
 
 
@@ -177,17 +186,30 @@ y_predicted = nn.predict(X_test)  # predict
 #################
 #  EVALUATION   # (to evaluate how well the REGRESSION did). For now we evaluate in the TRAINING DATA
 #################
+#TEST DATA
 # R^2 measure
 R2 = nn.score(X_test, y_test)
-print('R^2= ',R2) #evaluating predictions with R^2
-
+print('R^2_test= ',R2) #evaluating predictions with R^2
 # My EVALUATION metric (mean cosine similarity)
 cos = 0
 for i in range(1,y_test.shape[0]):
     #cos = cos + np.dot(np.array(y_predicted[i,]), np.array(y_test[i,]))/ (np.linalg.norm(np.array(y_test[i,])) * np.linalg.norm(np.array(y_predicted[i,])))
     cos = cos + np.dot(y_predicted[i,], y_test[i,]) / (np.linalg.norm(y_test[i,]) * np.linalg.norm(y_predicted[i,]))
 meanCos = cos/y_train.shape[0]
-print('mean cos similarity= ', meanCos)
+print('mean cos similarity_test= ', meanCos)
+
+#TRAIN DATA:
+y_predicted_train = nn.predict(X_train)  # predict
+# R^2 measure
+R2_train = nn.score(X_train, y_train)
+print('R^2_train= ',R2_train) #evaluating predictions with R^2
+# My EVALUATION metric (mean cosine similarity)
+cos = 0
+for i in range(1,y_train.shape[0]):
+    #cos = cos + np.dot(np.array(y_predicted[i,]), np.array(y_test[i,]))/ (np.linalg.norm(np.array(y_test[i,])) * np.linalg.norm(np.array(y_predicted[i,])))
+    cos = cos + np.dot(y_predicted_train[i,], y_train[i,]) / (np.linalg.norm(y_train[i,]) * np.linalg.norm(y_predicted_train[i,]))
+meanCos_train = cos/y_train.shape[0]
+print('mean cos similarity_train= ', meanCos_train)
 
 
 
@@ -195,9 +217,13 @@ print('mean cos similarity= ', meanCos)
 #  STORE performance  # (optional)
 #######################
 if store_performance == True:
-    results = [ [ 'R^2' , R2  ], ['mean cos simil', meanCos] ]
+    if test_data == True:
+        results = [ [ 'R^2_test' , R2 , 'R^2_train' , R2_train  ], ['mean cos simil_test', meanCos,'mean cos simil_train', meanCos_train] ]
+    elif test_data == False:
+        results = [ [ 'R^2_train' , R2_train  ], ['mean cos simil_train', meanCos_train] ]
     import writeDATA as wr
     wr.matrix2csv(results, save_perfDir)
+
 
 
 
