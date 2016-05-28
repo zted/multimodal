@@ -1,4 +1,14 @@
 
+import numpy as np
+#get working directory
+import os
+print(os.getcwd() + "\n")
+workingDir = os.getcwd()
+#add a path to the code (for the dependencies of import)
+codeDir = workingDir + '/code'
+import sys
+sys.path.append(codeDir)
+
 ###############################################
 ######## get statistics of entropy, std, etc. #
 ###############################################
@@ -65,10 +75,11 @@ with open(workingDir + '/data/descript_stats_disp.csv', "wb") as f:
 ####################################
 
 #get list of words test set
+import readDATA as rd
 #words, vecs = rd.readDATA(workingDir + '/embeddings/query_visual_embeddings_mean.txt', 'spaces')
 words, vecs = rd.readDATA(workingDir + '/embeddings/mapped_visual_maxpool_neuralnet_LR_0.02_dropout_0.25_nhidden_150_actiFun_Tanh.csv', 'csv')
 
-
+vecs[7,]
 buddy = vecs[7,]
 captain = vecs[4,]
 swan = vecs[8, ]
@@ -91,6 +102,7 @@ def simil(v1,v2):
     v2 = [float(t) for t in v2]
     cossim = 10 * np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
     print(cossim)
+
 
 print('president and captain', simil(president,captain))
 print('buddy and captain', simil(buddy,captain))
@@ -209,6 +221,8 @@ vec = [x for x in vec if x is not None]
 indices
 
 
-
-
-
+import scipy.stats
+a= [1,2,3,4,5]
+b = [3,4,5,6,7]
+perf = scipy.stats.spearmanr(b, a)[0]
+perf
