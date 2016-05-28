@@ -77,8 +77,6 @@ with open(workingDir + '/data/descript_stats_disp.csv', "wb") as f:
 #get list of words test set
 import readDATA as rd
 words, vecs = rd.readDATA(workingDir + '/embeddings/query_visual_embeddings_mean.txt', 'spaces')
-words, vecs = rd.readDATA(workingDir + '/embeddings/mapped_visual_maxpool_neuralnet_LR_0.02_dropout_0.25_nhidden_150_actiFun_Tanh.csv', 'csv')
-words, vecs = rd.readDATA(workingDir + '/embeddings/mapped_visual_mean_linear_LR_0.002_dropout_0.2.csv', 'csv')
 
 
 
@@ -120,8 +118,12 @@ print('clothes and sweater', simil(clothes,sweater))
 
 
 
-############ now check the training data #####################
-words, vecs = rd.readDATA(workingDir + '/TRAINING_DATA/visual_vecs_all_imagenet_maxpool.csv', 'csv')
+############ now check the TRAINING and MAPPED data #####################
+#words, vecs = rd.readDATA(workingDir + '/TRAINING_DATA/visual_vecs_all_imagenet_maxpool.csv', 'csv')
+#words, vecs = rd.readDATA(workingDir + '/embeddings/mapped_visual_mean_linear_LR_0.002_dropout_0.2.csv', 'csv')
+words, vecs = rd.readDATA(workingDir + '/embeddings/mapped_visual_maxpool_neuralnet_LR_0.02_dropout_0.25_nhidden_150_actiFun_Tanh.csv', 'csv')
+
+
 
 #get indices of a list that contain a given element whatever
 indices = [i for i, x in enumerate(words) if x == "bike"]
@@ -148,6 +150,13 @@ sweater = vecs[indices[0],]
 indices = [i for i, x in enumerate(words) if x == "clothes"]
 print(indices)
 clothes = vecs[indices[0],]
+
+def simil(v1,v2):
+    v1 = [float(t) for t in v1]
+    v2 = [float(t) for t in v2]
+    cossim = 10 * np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2))
+    print(cossim)
+
 
 print('president and captain', simil(president,captain))
 print('buddy and captain', simil(buddy,captain))
@@ -192,12 +201,5 @@ for word in testwords:
     if retrieved:
         fo.write('{} {}'.format(word, mystr))
 fo.close()
-
-
-
-
-
-
-
 
 

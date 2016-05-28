@@ -23,22 +23,22 @@ sys.path.append(codeDir)
 #####################################
 vects_type = 'mean' # type of representations used for LEARNING ('maxpool' or 'mean')
 # good results with: model = 'linear', learningRate = 0.02, dropoutRate = 0.35, NumIterations = 5, hiddenUnits = 30
-model = 'linear' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
+model = 'neuralnet' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
 learningRate = 0.02 # 0.02 is good for neuralnet. 0.0005 good for linear model.
-dropoutRate = 0.35 # 0.25 - 0.35 work well for linear and neuralnet.
+dropoutRate = 0.25 # 0.25 - 0.35 work well for linear and neuralnet.
 NumIterations = 10 #a hyperparameter that the library requires
 #parameters JUST FOR NEURALNET:
-hiddenUnits = 200 #just applies to neuralnet. 30 works quite well
+hiddenUnits = 150 #just applies to neuralnet. 30 works quite well
 activationFun = 'Tanh' #just applies to neuralnet. OPTIONS = ('Sigmoid' or 'Tanh' or 'Rectifier')
 outputLayer = 'Linear' #just applies to neuralnet. OPTIONS =('Linear' or 'Softmax')
 
 #Other parameters
-test_data = True #to split or not (True/False) a partition of data for testing (10%by default). If False, evaluation is in training data
+test_data = False #to split or not (True/False) a partition of data for testing (10%by default). If False, evaluation is in training data
 scale = False #scale the data
 stored = False #if you want to import an existing model or LEARN a new one: True or False
-store_model = False #if you want to store the model that you are using: True or False
-map_embeddings = False
-store_performance = True #if you want to store performance of these particular settings
+store_model = True #if you want to store the model that you are using: True or False
+map_embeddings = True
+store_performance = False #if you want to store performance of these particular settings
 
 savename = '_' + vects_type + '_' + model + '_LR_' + str(learningRate) + '_dropout_' + str(dropoutRate) + '_nhidden_' + str(hiddenUnits) + '_actiFun_' + activationFun
 
@@ -248,6 +248,10 @@ import writeDATA as wr
 wr.writeCSV(query_words, mapped_query_words, save_mappedDir)
 
 
+X_train =[]
+X_test = []
+y_train = []
+y_test = []
 
 
 
