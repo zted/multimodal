@@ -76,8 +76,13 @@ with open(workingDir + '/data/descript_stats_disp.csv', "wb") as f:
 
 #get list of words test set
 import readDATA as rd
-#words, vecs = rd.readDATA(workingDir + '/embeddings/query_visual_embeddings_mean.txt', 'spaces')
+words, vecs = rd.readDATA(workingDir + '/embeddings/query_visual_embeddings_mean.txt', 'spaces')
 words, vecs = rd.readDATA(workingDir + '/embeddings/mapped_visual_maxpool_neuralnet_LR_0.02_dropout_0.25_nhidden_150_actiFun_Tanh.csv', 'csv')
+words, vecs = rd.readDATA(workingDir + '/embeddings/mapped_visual_mean_linear_LR_0.002_dropout_0.2.csv', 'csv')
+
+
+
+vecs.shape
 
 vecs[7,]
 buddy = vecs[7,]
@@ -191,38 +196,8 @@ fo.close()
 
 
 
-#get indices of a list that contain a given element whatever
-indices = [i for i, x in enumerate(my_list) if x == "whatever"]
-
-#or to get indices if what you have is a numpy array (NUMERIC) instead of a list
-import numpy as np
-values = np.array([1,2,3,1,2,4,5,6,3,2,1])
-np.where(values == 3)[0]
-#or alternatively
-(values == 3).nonzero()
-
-#to use the indices we found before to get the elements in another vector/list
-c2 = [6544, 6 ,76,8765, 3434]
-cc = [6544, 6 ,None,8765, None]
-indices = [i for i, x in enumerate(cc) if x == '3ds']
-list( c2[i] for i in indices ) #the new list to retrieve is c2
 
 
 
 
-vec0 = [1, 6 ,5, 8, 4, 9]
-vec = [3, None ,5, None, 4, 1]
-indices = [i for i, x in enumerate(vec) if x != None]
-vec0 = [vec0[i] for i in indices]
-vec0
 
-vec = [x for x in vec if x is not None]
-
-indices
-
-
-import scipy.stats
-a= [1,2,3,4,5]
-b = [3,4,5,6,7]
-perf = scipy.stats.spearmanr(b, a)[0]
-perf
