@@ -203,3 +203,32 @@ for word in testwords:
 fo.close()
 
 
+
+################################################################################
+# get words that are in mapped visual embeddings and not in visual embeddings  #
+################################################################################
+import numpy as np
+#get working directory
+import os
+print(os.getcwd() + "\n")
+workingDir = os.getcwd()
+#add a path to the code (for the dependencies of import)
+codeDir = workingDir + '/code'
+import sys
+sys.path.append(codeDir)
+
+#get list of words test set
+import readDATA as rd
+visual_words, vecs1 = rd.readDATA(workingDir + '/embeddings/query_visual_embeddings_mean.txt', 'spaces')
+mapped_words, vecs2 = rd.readDATA(workingDir + '/embeddings/mapped_visual_maxpool_neuralnet_LR_0.02_dropout_0.25_nhidden_150_actiFun_Tanh.csv', 'csv')
+aa = set(mapped_words)
+bb = set(visual_words)
+intersecVocab = list(set(aa) & set(bb))
+len(intersecVocab)
+#notFoundWords = bb - aa #we could do that since we are certain that list bb is larger than aa (because of our pipeline)
+
+
+
+
+
+

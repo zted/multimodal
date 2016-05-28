@@ -21,9 +21,9 @@ sys.path.append(codeDir)
 #####################################
 #  define PARAMETERS for learning:  #
 #####################################
-vects_type = 'mean' # type of representations used for LEARNING ('maxpool' or 'mean')
+vects_type = 'maxpool' # type of representations used for LEARNING ('maxpool' or 'mean')
 # good results with: model = 'linear', learningRate = 0.02, dropoutRate = 0.35, NumIterations = 5, hiddenUnits = 30
-model = 'neuralnet' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
+model = 'CCA' #OPTIONS: 'linear' or 'neuralnet' or 'softmax' or 'CCA'
 learningRate = 0.02 # 0.02 is good for neuralnet. 0.0005 good for linear model.
 dropoutRate = 0.25 # 0.25 - 0.35 work well for linear and neuralnet.
 NumIterations = 10 #a hyperparameter that the library requires
@@ -32,13 +32,14 @@ hiddenUnits = 150 #just applies to neuralnet. 30 works quite well
 activationFun = 'Tanh' #just applies to neuralnet. OPTIONS = ('Sigmoid' or 'Tanh' or 'Rectifier')
 outputLayer = 'Linear' #just applies to neuralnet. OPTIONS =('Linear' or 'Softmax')
 
+
 #Other parameters
 test_data = False #to split or not (True/False) a partition of data for testing (10%by default). If False, evaluation is in training data
 scale = False #scale the data
 stored = False #if you want to import an existing model or LEARN a new one: True or False
 store_model = True #if you want to store the model that you are using: True or False
 map_embeddings = True
-store_performance = False #if you want to store performance of these particular settings
+store_performance = True #if you want to store performance of these particular settings
 
 savename = '_' + vects_type + '_' + model + '_LR_' + str(learningRate) + '_dropout_' + str(dropoutRate) + '_nhidden_' + str(hiddenUnits) + '_actiFun_' + activationFun
 
@@ -55,6 +56,7 @@ save_mappedDir = workingDir + '/embeddings/mapped_visual'+ savename +'.csv' #sav
 save_modelDir = workingDir + '/models/MODEL' + savename + '.pkl' #save the mapped output
 load_modelDir = save_modelDir
 save_perfDir = workingDir + '/results/REGRESSION_' + savename + '.csv' #save the mapped output
+
 
 
 

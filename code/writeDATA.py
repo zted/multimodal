@@ -25,3 +25,4 @@ def matrix2csv(MATRIX, saveDir): #assumes MATRIX is already in the format [word,
     with open(saveDir, "wb") as f:
         writer = csv.writer(f)
         writer.writerows(MATRIX)
+
